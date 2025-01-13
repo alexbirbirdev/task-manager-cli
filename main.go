@@ -5,6 +5,14 @@ import (
 	"os"
 )
 
+type Task struct {
+	id          int
+	description string
+	status      string
+	createdAt   string
+	updatedAt   string
+}
+
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: go run main.go [string]")
