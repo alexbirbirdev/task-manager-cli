@@ -1,25 +1,44 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 )
 
 type Task struct {
-	id          int
-	description string
-	status      string
-	createdAt   string
-	updatedAt   string
+	ID          int    `json:"id"`
+	Description string `json:"description"`
+	Status      string `json:"status"`
+	CreatedAt   string `json:"createdAt"`
+	UpdatedAt   string `json:updatedAt"`
 }
 
 func main() {
+	// Пробуем открыть файл
+	file, err := os.Open("tasks.json")
+	if err != nil {
+		fmt.Println("Error opening file", err)
+		return
+	}
+	defer file.Close()
+
+	var tasks []Task
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&tasks)
+	if err != nil {
+		fmt.Println("Error decoding JSON", err)
+		return
+	}
+
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: go run main.go [string]")
 		os.Exit(1)
 	}
 
 	command := os.Args[1]
+	// command := ""
 
 	switch command {
 	case "add":
@@ -27,9 +46,11 @@ func main() {
 			fmt.Println("Usage: go run add <title>")
 			os.Exit(1)
 		}
-		title := os.Args[2]
-		fmt.Println(title)
+		description := os.Args[2]
+		// fmt.Println(description)
+
 		//Исполнение функционала добавления
+		addTask(description, tasks)
 
 	case "update":
 		if len(os.Args) < 4 {
@@ -71,4 +92,35 @@ func main() {
 		fmt.Printf("Invalid command: %s\n", command)
 		os.Exit(1)
 	}
+}
+
+func addTask(description string, tasks []Task) ([]Task, error) {
+	// Инициализируем новую задачу
+	newTask := Task{
+		ID:          len(tasks) + 1,
+		Description: description,
+		Status:      "todo",
+		CreatedAt:   time.Now().Format(time.RFC3339),
+		UpdatedAt:   time.Now().Format(time.RFC3339),
+	}
+
+	// Добавляем в слайс новую задачу
+	tasks = append(tasks, newTask)
+
+	// Сохраняем изменения в JSON-файл
+	file, err := os.OpenFile("tasks.json", os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		fmt.Println("Error opening file", err)
+		return tasks, err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", " ")
+	err = encoder.Encode(tasks)
+	if err != nil {
+		return tasks, err
+	}
+
+	return tasks, nil
 }
