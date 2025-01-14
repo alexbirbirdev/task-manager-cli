@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -49,7 +50,6 @@ func main() {
 		}
 		description := os.Args[2]
 		addTask(description, tasks)
-
 	case "update":
 		if len(os.Args) < 4 {
 			fmt.Println("Usage: go run update <id> <title>")
@@ -59,7 +59,6 @@ func main() {
 		description := os.Args[3]
 		//Исполнение функционала изменения заголовка
 		updateTask(tasks, id, description)
-
 	case "delete":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: go run delete <id>")
@@ -67,7 +66,6 @@ func main() {
 		}
 		id, _ := strconv.Atoi(os.Args[2])
 		deleteTask(tasks, id)
-
 	case "mark-in-progress":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: go run mark-in-progress <id>")
@@ -132,7 +130,7 @@ func listTasks(tasks []Task, status string) {
 	}
 	c := 0
 	for _, task := range tasks {
-		if task.Status == status || status == "" {
+		if strings.ToLower(task.Status) == strings.ToLower(status) || status == "" {
 			fmt.Printf("ID: %v\n Description: %s\n Status: %s\n CreatedAt: %s\n UpdatedAt: %s\n",
 				task.ID, task.Description, task.Status, task.CreatedAt, task.UpdatedAt)
 			c++
