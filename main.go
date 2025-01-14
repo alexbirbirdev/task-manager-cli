@@ -19,7 +19,7 @@ func main() {
 	}
 
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: go run main.go [string]")
+		fmt.Println("Usage: [string]")
 		os.Exit(1)
 	}
 
@@ -28,15 +28,15 @@ func main() {
 	switch command {
 	case "add":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: go run add <title>")
+			fmt.Println("Usage: add <title>")
 			os.Exit(1)
 		}
 		description := os.Args[2]
-		commands.AddTask(description, tasks)
+		commands.AddTask(tasks, description)
 
 	case "update":
 		if len(os.Args) < 4 {
-			fmt.Println("Usage: go run update <id> <title>")
+			fmt.Println("Usage: update <id> <title>")
 			os.Exit(1)
 		}
 		id, _ := strconv.Atoi(os.Args[2])
@@ -45,7 +45,7 @@ func main() {
 
 	case "delete":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: go run delete <id>")
+			fmt.Println("Usage: delete <id>")
 			os.Exit(1)
 		}
 		id, _ := strconv.Atoi(os.Args[2])
@@ -53,7 +53,7 @@ func main() {
 
 	case "mark-in-progress":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: go run mark-in-progress <id>")
+			fmt.Println("Usage: mark-in-progress <id>")
 			os.Exit(1)
 		}
 		id, _ := strconv.Atoi(os.Args[2])
@@ -61,7 +61,7 @@ func main() {
 
 	case "mark-done":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: go run mark-in-progress <id>")
+			fmt.Println("Usage: mark-in-progress <id>")
 			os.Exit(1)
 		}
 		id, _ := strconv.Atoi(os.Args[2])

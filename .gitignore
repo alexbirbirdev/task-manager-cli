@@ -1,3 +1,6 @@
 *.tmp
 *.log
 tasks.json
+*.exe
+*.out
+*.bin

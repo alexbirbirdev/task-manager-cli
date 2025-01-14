@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func AddTask(description string, tasks []models.Task) error {
+func AddTask(tasks []models.Task, description string) error {
 	// Инициализируем новую задачу
 	newTask := models.Task{
 		ID:          len(tasks) + 1,
