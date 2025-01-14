@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"task-manager-cli/commands"
+	"task-manager-cli/config"
 	"task-manager-cli/models"
 	"task-manager-cli/utils"
 )
@@ -12,7 +13,7 @@ import (
 func main() {
 	var tasks []models.Task
 
-	if err := utils.LoadTasks("tasks.json", &tasks); err != nil {
+	if err := utils.LoadTasks(config.TasksFilePath, &tasks); err != nil {
 		fmt.Println("Error loading file with tasks", err)
 		os.Exit(1)
 	}

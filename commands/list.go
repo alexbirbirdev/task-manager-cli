@@ -16,7 +16,7 @@ func ListTasks(tasks []models.Task, status string) {
 
 	// Выводим список задач с указанным статусом или все вместе
 	for _, task := range tasks {
-		if status == "" || task.Status == strings.ToLower(status) {
+		if strings.ToLower(task.Status) == strings.ToLower(status) || status == "" {
 			fmt.Printf("ID: %v\n Description: %s\n Status: %s\n CreatedAt: %s\n UpdatedAt: %s\n",
 				task.ID, task.Description, task.Status, task.CreatedAt, task.UpdatedAt)
 			c++

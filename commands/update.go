@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"task-manager-cli/config"
 	"task-manager-cli/models"
 	"task-manager-cli/utils"
 	"time"
@@ -22,7 +23,7 @@ func UpdateTask(tasks []models.Task, id int, newDescription string) error {
 	}
 
 	// Сохраняем изменения в JSON-файл
-	err := utils.SaveFile("tasks.json", tasks)
+	err := utils.SaveFile(config.TasksFilePath, tasks)
 
 	if err != nil {
 		return err

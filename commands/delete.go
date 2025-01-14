@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"task-manager-cli/config"
 	"task-manager-cli/models"
 	"task-manager-cli/utils"
 )
@@ -22,7 +23,7 @@ func DeleteTask(tasks []models.Task, id int) error {
 	}
 
 	// Сохраняем изменения в JSON-файл
-	err := utils.SaveFile("tasks.json", newTasks)
+	err := utils.SaveFile(config.TasksFilePath, newTasks)
 	if err != nil {
 		return err
 	}
