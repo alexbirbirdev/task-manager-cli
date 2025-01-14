@@ -73,6 +73,8 @@ func main() {
 			fmt.Println("Usage: go run mark-in-progress <id>")
 			os.Exit(1)
 		}
+		id, _ := strconv.Atoi(os.Args[2])
+		markInProgress(tasks, id)
 	case "mark-done":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: go run mark-in-progress <id>")
@@ -201,4 +203,36 @@ func deleteTask(tasks []Task, id int) ([]Task, error) {
 	}
 
 	return newTasks, nil
+}
+
+func markInProgress(tasks []Task, id int) ([]Task, error) {
+	var found bool
+	for i, task := range tasks {
+		if task.ID == id {
+			found = true
+			task.Status = "in progress"
+			tasks[i] = task
+		}
+	}
+
+	if !found {
+		return tasks, fmt.Errorf("Task with ID %v not found", id)
+	}
+
+	// Сохраняем изменения в JSON-файл
+	file, err := os.OpenFile("tasks.json", os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		fmt.Println("Error opening file", err)
+		return tasks, err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", " ")
+	err = encoder.Encode(tasks)
+	if err != nil {
+		return tasks, fmt.Errorf("Error: %s", err)
+	}
+
+	return tasks, nil
 }
