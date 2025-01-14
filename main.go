@@ -57,7 +57,6 @@ func main() {
 		}
 		id, _ := strconv.Atoi(os.Args[2])
 		description := os.Args[3]
-		// fmt.Printf("Updating task with ID %v to title: %s\n", id, description)
 		//Исполнение функционала изменения заголовка
 		updateTask(tasks, id, description)
 
@@ -66,9 +65,8 @@ func main() {
 			fmt.Println("Usage: go run delete <id>")
 			os.Exit(1)
 		}
-		id := os.Args[2]
-		fmt.Printf("Deleting task with ID %s\n", id)
-		//Исполнение функционала удаления
+		id, _ := strconv.Atoi(os.Args[2])
+		deleteTask(tasks, id)
 
 	case "mark-in-progress":
 		if len(os.Args) < 3 {
@@ -124,6 +122,10 @@ func addTask(description string, tasks []Task) ([]Task, error) {
 }
 
 func listTasks(tasks []Task, status string) {
+	if len(tasks) == 0 {
+		fmt.Println("No tasks")
+		return
+	}
 	c := 0
 	for _, task := range tasks {
 		if task.Status == status || status == "" {
@@ -167,4 +169,36 @@ func updateTask(tasks []Task, id int, newDescription string) ([]Task, error) {
 		return tasks, err
 	}
 	return tasks, nil
+}
+
+func deleteTask(tasks []Task, id int) ([]Task, error) {
+	var found bool
+	newTasks := []Task{}
+	for _, task := range tasks {
+		if task.ID == id {
+			found = true
+		} else {
+			newTasks = append(newTasks, task)
+		}
+	}
+
+	if !found {
+		return tasks, fmt.Errorf("Task with ID %v not found", id)
+	}
+
+	// Сохраняем изменения в JSON-файл
+	file, err := os.OpenFile("tasks.json", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return tasks, fmt.Errorf("Error: %s", err)
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", " ")
+	err = encoder.Encode(newTasks)
+	if err != nil {
+		return tasks, fmt.Errorf("Error: %s", err)
+	}
+
+	return newTasks, nil
 }
