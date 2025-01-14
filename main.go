@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -47,9 +48,6 @@ func main() {
 			os.Exit(1)
 		}
 		description := os.Args[2]
-		// fmt.Println(description)
-
-		//Исполнение функционала добавления
 		addTask(description, tasks)
 
 	case "update":
@@ -57,10 +55,11 @@ func main() {
 			fmt.Println("Usage: go run update <id> <title>")
 			os.Exit(1)
 		}
-		id := os.Args[2]
-		title := os.Args[3]
-		fmt.Printf("Updating task with ID %s to title: %s\n", id, title)
+		id, _ := strconv.Atoi(os.Args[2])
+		description := os.Args[3]
+		// fmt.Printf("Updating task with ID %v to title: %s\n", id, description)
 		//Исполнение функционала изменения заголовка
+		updateTask(tasks, id, description)
 
 	case "delete":
 		if len(os.Args) < 3 {
@@ -136,4 +135,36 @@ func listTasks(tasks []Task, status string) {
 	if c == 0 {
 		fmt.Println("No tasks with status", status)
 	}
+}
+
+func updateTask(tasks []Task, id int, newDescription string) ([]Task, error) {
+	var isFounded bool
+	for i, task := range tasks {
+		if task.ID == id {
+			isFounded = true
+			tasks[i].Description = newDescription
+			tasks[i].UpdatedAt = time.Now().Format("2006-01-02 15:04:05")
+			break
+		}
+	}
+	if !isFounded {
+		return tasks, fmt.Errorf("Task with ID %v not found", id)
+	}
+
+	// Сохраняем изменения в JSON-файл
+	file, err := os.OpenFile("tasks.json", os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		fmt.Println("Error opening file", err)
+		return tasks, err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", " ")
+	err = encoder.Encode(tasks)
+
+	if err != nil {
+		return tasks, err
+	}
+	return tasks, nil
 }
