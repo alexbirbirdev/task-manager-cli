@@ -82,12 +82,11 @@ func main() {
 			os.Exit(1)
 		}
 	case "list":
-		if len(os.Args) == 2 {
-			fmt.Println("list all tasks")
-		}
+		var status string
 		if len(os.Args) == 3 {
-			fmt.Println("list only <status> tasks")
+			status = os.Args[2]
 		}
+		listTasks(tasks, status)
 	default:
 		fmt.Printf("Invalid command: %s\n", command)
 		os.Exit(1)
@@ -100,8 +99,8 @@ func addTask(description string, tasks []Task) ([]Task, error) {
 		ID:          len(tasks) + 1,
 		Description: description,
 		Status:      "todo",
-		CreatedAt:   time.Now().Format(time.RFC3339),
-		UpdatedAt:   time.Now().Format(time.RFC3339),
+		CreatedAt:   time.Now().Format("2006-01-02 15:04:05"),
+		UpdatedAt:   time.Now().Format("2006-01-02 15:04:05"),
 	}
 
 	// Добавляем в слайс новую задачу
@@ -123,4 +122,18 @@ func addTask(description string, tasks []Task) ([]Task, error) {
 	}
 
 	return tasks, nil
+}
+
+func listTasks(tasks []Task, status string) {
+	c := 0
+	for _, task := range tasks {
+		if task.Status == status || status == "" {
+			fmt.Printf("ID: %v\n Description: %s\n Status: %s\n CreatedAt: %s\n UpdatedAt: %s\n",
+				task.ID, task.Description, task.Status, task.CreatedAt, task.UpdatedAt)
+			c++
+		}
+	}
+	if c == 0 {
+		fmt.Println("No tasks with status", status)
+	}
 }
