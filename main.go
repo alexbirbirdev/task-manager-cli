@@ -211,6 +211,7 @@ func markInProgress(tasks []Task, id int) ([]Task, error) {
 		if task.ID == id {
 			found = true
 			task.Status = "In progress"
+			task.UpdatedAt = time.Now().Format("2006-01-02 15:04:05")
 			tasks[i] = task
 		}
 	}
@@ -243,6 +244,7 @@ func markDone(tasks []Task, id int) ([]Task, error) {
 		if task.ID == id {
 			found = true
 			task.Status = "Done"
+			task.UpdatedAt = time.Now().Format("2006-01-02 15:04:05")
 			tasks[i] = task
 		}
 	}
